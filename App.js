@@ -1,20 +1,28 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import 'react-native-gesture-handler';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { useColorScheme } from 'react-native';
+import { UserProvider } from './src/user/UserContext';
+import WelcomeScreen from './src/components/Welcome/WelcomeScreen';
+import CustomTabBar from './src/components/common/TabBar';
+import colors from './src/styles/colors'; // Ensure this path is correct
 
-export default function App() {
+const Stack = createStackNavigator();
+
+const App = () => {
+  const scheme = useColorScheme();
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <UserProvider>
+      <NavigationContainer theme={scheme === 'dark' ? colors.darkTheme : colors.lightTheme}>
+        <Stack.Navigator initialRouteName="Welcome" screenOptions={{ gestureEnabled: false }}>
+          <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Main" component={CustomTabBar} options={{ headerShown: false }} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </UserProvider>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
