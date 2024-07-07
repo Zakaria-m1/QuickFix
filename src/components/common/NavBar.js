@@ -1,10 +1,11 @@
 // CustomNavBar.js
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Image, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import QuickFixImage from '../../../assets/images/QuikLight.png';
+import globalStyles from '../../styles/global';
 
 const CustomNavBar = ({ showBackButton = false }) => {
   const navigation = useNavigation();
@@ -19,7 +20,7 @@ const CustomNavBar = ({ showBackButton = false }) => {
       )}
       
       <View style={styles.imageContainer}>
-        <Image source={QuickFixImage} style={styles.image} />
+       <Text style={globalStyles.logoBig}>QUIK</Text>
       </View>
       {showBackButton && <View style={styles.iconPlaceholder} />}
     </View>

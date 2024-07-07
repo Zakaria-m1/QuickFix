@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeAreaView, Text, StyleSheet, ScrollView, TouchableOpacity, View, Image } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import { useTheme, useNavigation } from '@react-navigation/native';
 import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import * as Progress from 'react-native-progress';
 
@@ -8,11 +8,12 @@ import * as Progress from 'react-native-progress';
 const GuestProfile = () => {
     const { colors } = useTheme();
     const styles = getStyles(colors);
+    const navigation = useNavigation();
     return (
         <SafeAreaView style={styles.safeareaview}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.createAccountButton}>
+                    <TouchableOpacity style={styles.createAccountButton} onPress={() => navigation.navigate('LoginModal')}>
                         <Text style={styles.createAccountButtonText}>SKAPA KONTO</Text>
                     </TouchableOpacity>
                 </View>
@@ -98,6 +99,7 @@ const GuestProfile = () => {
 const getStyles = (colors) => StyleSheet.create({
     safeareaview: {
         marginBottom: 80,
+        marginTop: 20,
     },
     container: {
         flex: 1,

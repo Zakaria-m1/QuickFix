@@ -1,14 +1,21 @@
-
-// hooks/useFonts.js
 import * as Font from 'expo-font';
-import { useEffect, useState } from 'react';
-import { Montserrat_400Regular, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
+import { useState, useEffect } from 'react';
 
-const useFonts = async () => {
-  await Font.loadAsync({
-    Montserrat_400Regular,
-    Montserrat_700Bold,
-  });
+const useFonts = () => {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    const loadFonts = async () => {
+      await Font.loadAsync({
+        'FredokaOne-Regular': require('../../assets/fonts/FredokaOne-Regular.ttf'),
+      });
+      setFontsLoaded(true);
+    };
+
+    loadFonts();
+  }, []);
+
+  return fontsLoaded;
 };
 
 export default useFonts;

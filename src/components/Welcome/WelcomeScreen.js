@@ -1,43 +1,80 @@
-// src/components/Welcome/WelcomeScreen.js
 import React, { useEffect } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-import globalStyles from '../../styles/global';
-import QuickFixImage from '../../../assets/images/Splash.png';
-import { LinearGradient } from 'expo-linear-gradient';
+import { View, StyleSheet, Dimensions } from 'react-native';
+import LottieView from 'lottie-react-native';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-native-reanimated';
+import * as Animatable from 'react-native-animatable';
+
+const { height } = Dimensions.get('window');
 
 const WelcomeScreen = ({ navigation }) => {
-  
-    useEffect(() => {
-        // Navigate to BuyerHome after 3 seconds
-        const timer = setTimeout(() => {
-            navigation.navigate('Main');
-        }, 2000);
+  const translateY = useSharedValue(height); // Start from below the screen
 
-        // Cleanup the timer if the component is unmounted
-        return () => clearTimeout(timer);
-    }, [navigation]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.navigate('Main');
+    }, 3000); // 3 seconds total delay
 
-    return (
-      <View>
-        <Image source={QuickFixImage} style={styles.image} />
-      </View>
-    
-    );
+    translateY.value = withTiming(0, {
+      duration: 1500,
+      easing: Easing.inOut(Easing.ease),
+    });
+
+    return () => clearTimeout(timer);
+  }, [navigation, translateY]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+  }));
+
+  return (
+    <View style={styles.container}>
+      <Animatable.Text 
+        animation="bounceIn"
+        duration={1000}
+        style={styles.title}
+      >
+        QUIK
+      </Animatable.Text>
+      <Animated.View style={[styles.animationContainer, animatedStyle]}>
+        <LottieView
+          source={require('../../../assets/Rocket.json')} // Update with the path to your rocket animation JSON file
+          autoPlay
+          loop={false}
+          
+          style={styles.animation}
+        />
+      </Animated.View>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#28A745',
+    justifyContent: 'center', // Center the text vertically
     alignItems: 'center',
-    padding: 16,
-    },
-    image: {
-        width: '100%',
-        height: '100%',
-        marginBottom: 10,
-        alignSelf: 'center',
-    },
+    overflow: 'hidden', // Ensure no overflow
+  },
+  animationContainer: {
+    width: '100%',
+    height: height + 400, // Adjust height to start the animation from below the screen
+    position: 'absolute', // Position it absolutely
+    bottom: -450,
+    zIndex: 1, // Ensure the animation is above other elements
+  },
+  animation: {
+    width: '100%',
+    height: '100%',
+  },
+  title: {
+    position: 'absolute', // Position it absolutely
+    top: '45%', // Adjust to place the text in the center vertically
+    fontSize: 80,
+    fontFamily: 'Omnes',
+    color: '#ffffff', // Change to '#000000' if using a white background
+    zIndex: 2, // Ensure the text is above the animation
+  },
 });
 
 export default WelcomeScreen;

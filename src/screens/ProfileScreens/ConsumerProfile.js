@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
 import { SafeAreaView, Text, StyleSheet, ScrollView, TouchableOpacity, View, Image } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import { useNavigation, useRoute, useTheme } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Progress from 'react-native-progress';
 import JobbaModal from '../../components/modals/JobbaModal';
 
 // Consumer Profile Component
-const ConsumerProfile = () => {
+const ConsumerProfile = ({ showJobbaModal }) => {
     const { colors } = useTheme();
     const styles = getStyles(colors);
     const [modalVisible, setModalVisible] = useState(false);
+    const navigation = useNavigation();
 
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView>
                 <View style={styles.profileHeader}>
                     <View style={styles.profileInfo}>
-                        <Text style={styles.profileName}>Zakaria M</Text>
+                        <Text style={styles.profileName}>Hej, Zakaria</Text>
                         <View style={styles.ratingContainer}>
                             <MaterialIcons name="star" size={20} color={colors.accent} />
                             <Text style={styles.rating}>4.20</Text>
@@ -40,10 +41,9 @@ const ConsumerProfile = () => {
                 </View>
                 <View style={styles.helperSection}>
                     <Image source={{ uri: 'https://th.bing.com/th/id/R.7beee0700b652cbad6fb99374aa2db03?rik=nhf%2bTawNcWgpgw&pid=ImgRaw&r=0' }} style={styles.helperImage} />
-                    <TouchableOpacity style={styles.helperButton} onPress={() => setModalVisible(true)}>
+                    <TouchableOpacity style={styles.helperButton} onPress={() => navigation.navigate('JobbaModal')}>
                         <Text style={styles.helperButtonText}>Tjäna pengar nu</Text>
                     </TouchableOpacity>
-                    <JobbaModal visible={modalVisible} onClose={() => setModalVisible(false)} />
                     <Text style={styles.helperText}>Är ni ett företag?</Text>
                     <TouchableOpacity style={styles.smallButton}>
                         <Text style={styles.smallButtonText}>Skapa konto här istället</Text>
@@ -144,7 +144,9 @@ const getStyles = (colors) => StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: colors.background,
+        backgroundColor: colors.secondary,
+        marginTop: 40,
+
     },
     buttonContainer: {
         alignItems: 'center',
@@ -174,6 +176,8 @@ const getStyles = (colors) => StyleSheet.create({
         fontSize: 32,
         fontWeight: 'bold',
         color: colors.text,
+        fontFamily: 'Omnes',
+        marginBottom: 5,
     },
     ratingContainer: {
         flexDirection: 'row',

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { SafeAreaView, View, Text, Image, StyleSheet, FlatList, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Ionicons, FontAwesome, FontAwesome5 } from '@expo/vector-icons';
+import Loading from '../../components/common/Modal';
 
 const services = [
   { id: '1', type: 'consumer', description: 'Flyttrensning', price: '300 kr', image: 'https://via.placeholder.com/100' },
@@ -25,23 +26,26 @@ const AnnonserScreen = () => {
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [selectedTab, setSelectedTab] = useState('all');
 
-  const fetchServices = useCallback(async () => {
-    setIsLoading(true);
-    // Simulate an API call
-    const fetchedServices = services.slice(0, PAGE_SIZE * page);
-    setFilteredServices(fetchedServices);
-    setIsLoading(false);
+  const fetchServices = useCallback(() => {
+    // Simulate an API call with a delay
+    setTimeout(() => {
+      const fetchedServices = services.slice(0, PAGE_SIZE * page);
+      setFilteredServices(fetchedServices);
+      setIsLoading(false);
+      setIsFetchingMore(false);
+    }, 2000); // 2 seconds delay
   }, [page]);
 
   useEffect(() => {
-    fetchServices();
-  }, [fetchServices]);
+    if (isLoading || isFetchingMore) {
+      fetchServices();
+    }
+  }, [fetchServices, isLoading, isFetchingMore]);
 
   const handleLoadMore = () => {
-    if (!isFetchingMore) {
+    if (!isFetchingMore && !isLoading) {
       setIsFetchingMore(true);
       setPage(prevPage => prevPage + 1);
-      fetchServices().then(() => setIsFetchingMore(false));
     }
   };
 
@@ -63,7 +67,6 @@ const AnnonserScreen = () => {
     </TouchableOpacity>
   );
   
-  
   const filterServices = (type) => {
     if (type === 'all') {
       return filteredServices;
@@ -72,7 +75,7 @@ const AnnonserScreen = () => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.secondary }]}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.filterButton}>
           <Ionicons name="filter" size={24} color={colors.accent} />
@@ -100,7 +103,7 @@ const AnnonserScreen = () => {
         </TouchableOpacity>
       </View>
       {isLoading ? (
-        <ActivityIndicator size="large" color={colors.text} />
+        <Loading duration={2000} /> // Use the Loading component with custom duration here
       ) : (
         <FlatList
           data={filterServices(selectedTab).filter(service =>
@@ -119,7 +122,6 @@ const AnnonserScreen = () => {
     </SafeAreaView>
   );
 };
-
 const getStyles = (colors) => StyleSheet.create({
   container: {
     flex: 1,
@@ -128,7 +130,7 @@ const getStyles = (colors) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
-    backgroundColor: colors.background,
+    backgroundColor: colors.secondary,
   },
   filterButton: {
     padding: 10,
@@ -145,33 +147,29 @@ const getStyles = (colors) => StyleSheet.create({
   },
   segmentedControl: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     marginVertical: 20,
     paddingHorizontal: 10,
-    borderRadius: 20,
+    borderRadius: 10,
     backgroundColor: colors.card,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 5,
+    overflow: 'hidden',
   },
   segmentButton: {
     flex: 1,
     paddingVertical: 10,
     alignItems: 'center',
-    borderRadius: 20,
+    borderRadius: 10,
   },
   activeSegment: {
     backgroundColor: colors.accent,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 10,
   },
   segmentButtonText: {
-    fontSize: 16,
+    fontSize: 14,
     color: colors.text,
   },
   activeSegmentText: {
